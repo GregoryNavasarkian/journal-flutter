@@ -17,19 +17,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late List<JournalEntry> journalEntries;
   bool isLoading = false;
-
+  
   @override
   void initState() {
     super.initState();
     refreshJournalEntries();
   }
-
+  
   @override
   void dispose() {
     JournalDatabase.instance.close();
     super.dispose();
   }
-
+  
   Future refreshJournalEntries() async {
     setState(() => isLoading = true);
     journalEntries = await JournalDatabase.instance.readAllJournalEntries();
@@ -40,26 +40,37 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Journal"),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.brightness_6),
-              color: Colors.white,
-              onPressed: () {
-                Provider.of<ThemeProvider>(context, listen: false).swapTheme();
-              },
-            )
-          ],
+          title: const Text("Journal Entries"),
+          // actions: <Widget>[
+          //   IconButton(
+          //     icon: const Icon(Icons.brightness_6),
+          //     color: Colors.white,
+          //     onPressed: () {
+          //       Provider.of<ThemeProvider>(context, listen: false).swapTheme();
+          //     },
+          //   )
+          // ],
         ),
         body: Center(
-          child: isLoading
-              ? CircularProgressIndicator()
-              : journalEntries.isEmpty
-                  ? const Text(
-                      'No Entries',
-                      style: TextStyle(color: Colors.white, fontSize: 24),
-                    )
-                  : buildJournal(),
+          child: journalEntries.isEmpty ? empty() : buildJournal(),
+        ),
+        endDrawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: SwitchListTile(
+                  title: const Text('Dark Theme'),
+                  value: Provider.of<ThemeProvider>(context).getThemeMode(),
+                  onChanged: (value) {
+                    Provider.of<ThemeProvider>(context, listen: false)
+                        .swapTheme();
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
@@ -99,6 +110,23 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       },
+    );
+  }
+  
+  Widget empty() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      // ignore: prefer_const_literals_to_create_immutables
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Icon(
+            Icons.book,
+            size: 150,
+            color: Colors.grey,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -4,9 +4,11 @@ import '../model/journal_entry.dart';
 
 class JournalDatabase {
   static final JournalDatabase instance = JournalDatabase._init();
+  // ignore: constant_identifier_names
+  static const String CREATE_DB = 'assets/schema_1.sql.txt';
 
   static Database? _database;
-
+  
   JournalDatabase._init();
 
   Future<Database> get database async {
@@ -15,7 +17,7 @@ class JournalDatabase {
     _database = await _initDB('journal.db');
     return _database!;
   }
-
+  
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);

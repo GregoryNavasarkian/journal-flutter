@@ -15,6 +15,14 @@ class ThemeProvider extends ChangeNotifier {
       _selectedTheme = light;
     }
   }
+  
+  bool getThemeMode() {
+    if (_selectedTheme == dark) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future<void> swapTheme() async {
     prefs = await SharedPreferences.getInstance();
