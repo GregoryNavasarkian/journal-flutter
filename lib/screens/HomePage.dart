@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-  
+
   Widget formattedDate(String date) {
     DateTime tempDate = DateTime.parse(date);
     return Text(DateFormat('EEEE, MMMM d, yyyy').format(tempDate));
@@ -194,12 +194,13 @@ class _HomePageState extends State<HomePage> {
           child: Icon(
             Icons.book,
             size: 150,
-            color: Color.fromARGB(255, 73, 73, 73),
+            color: Color.fromARGB(255, 96, 96, 96),
           ),
         ),
         const Text("No Journal Entries",
             style: TextStyle(
-                fontSize: 20, color: Color.fromARGB(255, 29, 29, 29))),
+              fontSize: 20,
+            )),
       ],
     );
   }
