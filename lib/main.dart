@@ -13,6 +13,7 @@ void main() async {
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
+  
   SharedPreferences.getInstance().then((prefs) {
     var isDarkTheme = prefs.getBool("darkTheme") ?? false;
     return runApp(
@@ -26,6 +27,7 @@ void main() async {
   });
 }
 
+// ignore: use_key_in_widget_constructors
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Journal Entries',
           theme: value.getTheme(),
-          home: HomePage(),
+          home: const HomePage(),
         );
       },
     );

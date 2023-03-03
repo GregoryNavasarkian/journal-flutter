@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:journal/model/journal_entry.dart';
 import 'package:journal/db/journal_database.dart';
@@ -15,7 +17,8 @@ class EditJournalEntryPage extends StatefulWidget {
 }
 
 class _EditJournalEntryPageState extends State<EditJournalEntryPage> {
-  late JournalEntry journalEntry;
+  late JournalEntry journalEntry =
+      const JournalEntry(title: '', body: '', rating: 1, date: '');
   bool isLoading = false;
 
   @override
@@ -30,51 +33,13 @@ class _EditJournalEntryPageState extends State<EditJournalEntryPage> {
     setState(() => isLoading = false);
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return (Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text('Edit Entry'),
-  //     ),
-  //     body: Column(
-  //       children: <Widget>[
-  //         Text(journalEntry.title),
-  //         Text(journalEntry.body),
-  //         Text(journalEntry.rating.toString()),
-  //       ],
-  //     ),
-  //   ));
-  // }
-
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
+          title: Text(journalEntry.date),
           actions: [editButton(), deleteButton()],
         ),
-        body: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Padding(
-                padding: EdgeInsets.all(12),
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  children: [
-                    Text(
-                      journalEntry.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      journalEntry.body,
-                      style:
-                          const TextStyle(color: Colors.white70, fontSize: 18),
-                    )
-                  ],
-                ),
-              ),
+        body: buildJournal(),
       );
 
   Widget editButton() => ElevatedButton(
@@ -95,7 +60,29 @@ class _EditJournalEntryPageState extends State<EditJournalEntryPage> {
         child: const Text('Delete'),
         onPressed: () async {
           await JournalDatabase.instance.delete(widget.journalId);
+          // ignore: use_build_context_synchronously
           Navigator.of(context).pop();
         },
+      );
+
+  Widget buildJournal() => Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10, top: 4),
+              child: Text(
+                journalEntry.title,
+                style:
+                    const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              journalEntry.body,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ],
+        ),
       );
 }

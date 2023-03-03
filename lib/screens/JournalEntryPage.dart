@@ -1,6 +1,11 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:journal/model/journal_entry.dart';
 import 'package:journal/db/journal_database.dart';
+import 'package:intl/intl.dart';
+
+import 'HomePage.dart';
 
 class JournalEntryPage extends StatefulWidget {
   final JournalEntry? journalEntry;
@@ -16,13 +21,16 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
   late String title;
   late String body;
   late int rating;
+  late String date = formatDate(DateTime.now());
+  String formatDate(DateTime date) => DateFormat("yyyy-MM-dd").format(date);
 
   @override
   void initState() {
     super.initState();
     title = widget.journalEntry?.title ?? '';
     body = widget.journalEntry?.body ?? '';
-    rating = widget.journalEntry?.rating ?? 0;
+    rating = widget.journalEntry?.rating ?? 1;
+    date = widget.journalEntry?.date ?? formatDate(DateTime.now());
   }
 
   @override
@@ -70,44 +78,76 @@ class _JournalEntryPageState extends State<JournalEntryPage> {
               TextFormField(
                 initialValue: rating.toString(),
                 decoration: const InputDecoration(
-                  labelText: 'Rating',
+                  labelText: 'Rating 1-4',
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a rating';
+                  if (value == null ||
+                      value.isEmpty ||
+                      int.tryParse(value)! > 4 ||
+                      int.tryParse(value)! < 1) {
+                    return 'Please enter a rating between 1 and 4';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  rating = int.parse(value ?? '0');
+                  rating = int.parse(value ?? '1');
                 },
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    if (widget.journalEntry == null) {
-                      JournalDatabase.instance.create(
-                        JournalEntry(
-                          title: title,
-                          body: body,
-                          rating: rating,
-                        ),
-                      );
-                    } else {
-                      JournalDatabase.instance.update(
-                        JournalEntry(
-                          id: widget.journalEntry!.id,
-                          title: title,
-                          body: body,
-                          rating: rating,
-                        ),
-                      );
-                    }
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const Text('Submit'),
+              Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                        minimumSize: const Size(90, 40),
+                        maximumSize: const Size(90, 40),
+                      ),
+                      onPressed: () async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                      },
+                      child: const Text('Back'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(90, 40),
+                        maximumSize: const Size(90, 40),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          if (widget.journalEntry == null) {
+                            JournalDatabase.instance.create(
+                              JournalEntry(
+                                title: title,
+                                body: body,
+                                rating: rating,
+                                date: date,
+                              ),
+                            );
+                          } else {
+                            JournalDatabase.instance.update(
+                              JournalEntry(
+                                id: widget.journalEntry!.id,
+                                title: title,
+                                body: body,
+                                rating: rating,
+                                date: date,
+                              ),
+                            );
+                          }
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

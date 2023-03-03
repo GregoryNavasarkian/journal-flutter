@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../model/journal_entry.dart';
@@ -8,7 +10,7 @@ class JournalDatabase {
   static const String CREATE_DB = 'assets/schema_1.sql.txt';
 
   static Database? _database;
-  
+
   JournalDatabase._init();
 
   Future<Database> get database async {
@@ -17,26 +19,22 @@ class JournalDatabase {
     _database = await _initDB('journal.db');
     return _database!;
   }
-  
+
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-
+    
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
+  // create database
   Future _createDB(Database db, int version) async {
-    await db.execute('''CREATE TABLE $journal (
-      ${JournalFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-      ${JournalFields.title} TEXT NOT NULL,
-      ${JournalFields.body} TEXT NOT NULL,
-      ${JournalFields.rating} INTEGER NOT NULL
-    )''');
+    await db.execute(await rootBundle.loadString(CREATE_DB));
   }
 
   Future<JournalEntry> create(JournalEntry journalEntry) async {
     final db = await instance.database;
-
+    
     final id = await db.insert(journal, journalEntry.toJson());
     return journalEntry.copy(id: id);
   }
@@ -60,8 +58,9 @@ class JournalDatabase {
 
   Future<List<JournalEntry>> readAllJournalEntries() async {
     final db = await instance.database;
-    final result = await db.rawQuery('SELECT * FROM $journal');
-    return result.map( (json) => JournalEntry.fromJson(json)).toList();
+    const orderBy = '${JournalFields.id} DESC';
+    final result = await db.rawQuery('SELECT * FROM $journal ORDER BY $orderBy');
+    return result.map((json) => JournalEntry.fromJson(json)).toList();
   }
 
   Future<int> update(JournalEntry journalEntry) async {
@@ -84,7 +83,7 @@ class JournalDatabase {
       whereArgs: [id],
     );
   }
-  
+
   Future close() async {
     final db = await instance.database;
     db.close();
