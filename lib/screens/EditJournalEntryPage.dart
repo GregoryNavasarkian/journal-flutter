@@ -80,7 +80,13 @@ class _EditJournalEntryPageState extends State<EditJournalEntryPage> {
             ),
             Text(
               journalEntry.body,
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 20),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Text('Rating: ${journalEntry.rating}',
+                style: const TextStyle(fontSize: 16),
+              ),
             ),
           ],
         ),
