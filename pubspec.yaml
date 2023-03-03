@@ -4,26 +4,26 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-    sdk: ">=2.18.6 <3.0.0"
+  sdk: ">=2.18.6 <3.0.0"
 
 dependencies:
-    flutter:
-        sdk: flutter
+  flutter:
+    sdk: flutter
 
-    cupertino_icons: ^1.0.2
-    shared_preferences: ^2.0.18
-    provider: ^6.0.5
-    theme_provider: ^0.5.0
-    sqflite: ^2.2.5
-    intl: ^0.18.0
+  cupertino_icons: ^1.0.2
+  shared_preferences: ^2.0.18
+  provider: ^6.0.5
+  theme_provider: ^0.5.0
+  sqflite: ^2.2.5
+  intl: ^0.18.0
 
 dev_dependencies:
-    flutter_test:
-        sdk: flutter
-    flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
 
 flutter:
-    uses-material-design: true
+  uses-material-design: true
 
-    assets:
-        - assets/schema_1.sql.txt
+  assets:
+    - assets/schema_1.sql.txt
