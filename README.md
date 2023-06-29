@@ -1,4 +1,4 @@
-# Journal
+# Journal Mobile App
 
 `Flutter notes app with Sqlite db`
 
