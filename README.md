@@ -1,6 +1,6 @@
 # Journal Mobile App
 
-`Flutter notes app with Sqlite db`
+`Flutter notes app with Sqlite db, dark and light modes`
 
 ### Getting Started
 
